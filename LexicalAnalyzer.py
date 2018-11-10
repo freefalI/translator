@@ -4,6 +4,9 @@ from classes import *
 #TODO  чи може бути ідн і мітка з одним іменем
 
 class LexicalAnalyzer:
+    IDN_CODE = 100
+    CON_CODE = 101
+    LAB_CODE = 102
     def __init__(self,program):
         self.program = program
         self.lexemes_table = {
@@ -63,8 +66,13 @@ class LexicalAnalyzer:
         self.IDN_CODE = 100
         self.CON_CODE = 101
         self.LAB_CODE = 102
-
-
+    # @classmethod
+    # def getIdnCode(self):
+    #     return LexicalAnalyzer().IDN_CODE
+    # def getConstantCode(self):
+    #     return self.CON_CODE
+    # def getLabelCode(self):
+    #     return self.LAB_CODE
     def removeComments(self):
         self.program = re.sub(r'//[^\n]*','',self.program)
 
