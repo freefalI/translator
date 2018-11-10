@@ -224,4 +224,14 @@ class LexicalAnalyzer:
         elif lexeme in {self.TYPE_INT,self.TYPE_FLOAT,self.TYPE_LABEL}:
             self.variable_type=lexeme
         self.addLexeme(lexeme,self.getLexemCode(lexeme))        
-        
+
+if __name__ == "__main__":
+    FILE_NAME  = 'source.txt'
+    file = open(FILE_NAME,'r')
+    input_text = file.read()
+    file.close()
+    # print(input_text)
+    lexer = LexicalAnalyzer(input_text)
+    (t_lexemes,t_idns,t_constants) = lexer.run()
+    # text="".join(tablesToString(t_lexemes,t_idns,t_constants))
+    print(*t_lexemes,*t_idns,*t_constants,sep="\n")

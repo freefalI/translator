@@ -134,9 +134,10 @@ class Complier:
         # self.text_area_top.delete('1.0', END) 
         # self.text_area_top.insert(1.0,text)
 
-FILE_NAME  = 'source.txt'
-root = Tk()
-gui = Complier(root,FILE_NAME)
-root.state('zoomed')
-root.mainloop()
+if  __name__ == "__main__":
+    FILE_NAME  = 'source.txt'
+    root = Tk()
+    gui = Complier(root,FILE_NAME)
+    root.state('zoomed')
+    root.mainloop()
 
