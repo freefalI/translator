@@ -1,7 +1,7 @@
 
 class TranslatorException(Exception):
     def __init__(self, message=None, line=None):
-        msg = "RAISED ON LINE {},\n ".format(line) if line else ""
+        msg = "RAISED ON LINE {},\n".format(line) if line else ""
         msg += "MESSAGE: {}".format(message) if message else "There is no message"
         super().__init__(msg)
 

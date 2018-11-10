@@ -1,8 +1,6 @@
 import re
-from pprint import pprint
 from exceptions import *
 from classes import *
-import json
 #TODO  чи може бути ідн і мітка з одним іменем
 
 class LexicalAnalyzer:
@@ -75,9 +73,10 @@ class LexicalAnalyzer:
         self.removeComments()
         # print(self.program)
         self.parse()
-        print("---Lexems",*self.lexemes,sep='\n')
-        print("---Idns",*self.idns,sep='\n')
-        print("---Cons",*self.constants,sep='\n')
+        # print("---Lexems",*self.lexemes,sep='\n')
+        # print("---Idns",*self.idns,sep='\n')
+        # print("---Cons",*self.constants,sep='\n')
+        return (self.lexemes,self.idns,self.constants)
 
     def nextChar(self):
         try:
@@ -218,10 +217,3 @@ class LexicalAnalyzer:
             self.variable_type=lexeme
         self.addLexeme(lexeme,self.getLexemCode(lexeme))        
         
-FILE_NAME  = 'source.txt'
-file = open(FILE_NAME,'r')
-input_text = file.read()
-file.close()
-# print(input_text)
-lexer = LexicalAnalyzer(input_text)
-lexer.run()
