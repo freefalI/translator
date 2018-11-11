@@ -3,13 +3,12 @@ float b,c
 label exit
 {
     cout<<a<<35<<-5.1  
-    cout<<<<
+    cout<<a
     a = -15.5
     b = 5-16
     c = 5>2? -15.6 : -89
     a = 5-5
     goto exit 
-    35+(2+3)
     exit:
 }
 

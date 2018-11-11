@@ -1,4 +1,5 @@
 from LexicalAnalyzer import *
+from SyntaxAnalyzer import *
 from tkinter import *
 from tkinter.filedialog import askopenfilename,asksaveasfilename
 
@@ -119,6 +120,8 @@ class Complier:
         lexer = LexicalAnalyzer(text)
         try:
             (t_lexemes,t_idns,t_constants) = lexer.run()
+            sAn = SyntaxAnalyzer(t_lexemes,t_idns,t_constants)
+            sAn.run()
             # text2="".join(tablesToString(t_lexemes,t_idns,t_constants))
             text2="".join(makeTables(t_lexemes,t_idns,t_constants))
             self.text_area_bottom.insert(1.0,text2)

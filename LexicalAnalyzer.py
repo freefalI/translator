@@ -43,9 +43,6 @@ class LexicalAnalyzer:
             ')': 31,
             ":": 32,
             '?': 33
-            # 'IDN':100,
-            # 'CON':101,
-            # 'LAB':102
         }
         self.single_separators = {'{','}','\n',' ',',','=','>','<','+','-','*','/','(',')',':','?','!'}
         self.lexemes = []
@@ -57,7 +54,6 @@ class LexicalAnalyzer:
         self.line_count = 1
         self.variable_type = None 
         self.wait_for_kft = True # 
-        # self.wait_binary_minus
 
         self.END_OF_PROGRAM_SYMBOL = '}'
         self.TYPE_INT = 'int'
@@ -66,13 +62,7 @@ class LexicalAnalyzer:
         self.IDN_CODE = 100
         self.CON_CODE = 101
         self.LAB_CODE = 102
-    # @classmethod
-    # def getIdnCode(self):
-    #     return LexicalAnalyzer().IDN_CODE
-    # def getConstantCode(self):
-    #     return self.CON_CODE
-    # def getLabelCode(self):
-    #     return self.LAB_CODE
+
     def removeComments(self):
         self.program = re.sub(r'//[^\n]*','',self.program)
 

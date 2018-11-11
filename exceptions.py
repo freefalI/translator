@@ -26,3 +26,6 @@ class VariableRedeclarationException(SemanticException):
 
 class NoEndOfProgramSymbolException(TranslatorException):
     pass
+
+class SyntaxException(TranslatorException):
+    pass
