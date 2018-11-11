@@ -24,13 +24,11 @@ class SyntaxAnalyzer:
                             self.i+=1
                             return True
                         else:
-                            raise SyntaxException("Нема закриваючої фігурної дужки",self.line())
-                    else:
-                        raise SyntaxException("Невірний список операторів",self.line())
+                            raise SyntaxException("Немає закриваючої фігурної дужки",self.line())
+                else:
+                    raise SyntaxException("Відсутній список операторів",self.line())
             else:
-                raise SyntaxException("Нема відкриваючої фігурної дужки",+self.line())
-        else:
-            raise SyntaxException("Невірний список оголошень",self.line())
+                raise SyntaxException("Немає відкриваючої фігурної дужки",+self.line())
     
     def spOg(self):
         if self.og():
@@ -41,9 +39,10 @@ class SyntaxAnalyzer:
                         self.i+=1
                     else:
                         raise SyntaxException("Відсутній перенос на новий рядок",self.line())
-                return True
+                if self.lexeme(13):
+                    return True
+                raise SyntaxException("Невірне оголошення",self.line())
             else:
-                print(self.lexemes[self.i])
                 raise SyntaxException("Відсутній перенос на новий рядок",self.line())
         else:
             raise SyntaxException("Відсутнє перше оголошення",self.line())
@@ -55,27 +54,13 @@ class SyntaxAnalyzer:
             else:
                 raise SyntaxException("Відсутній список змінних",self.line())
         else:
-            raise SyntaxException("Відсутній тип",self.line())
-    def spOp(self):#TODO refactor same code
-        if self.op():
-            if self.lexeme(15):
-                self.i+=1
-                while self.op():
-                    if self.lexeme(15):
-                        self.i+=1
-                    else:
-                        raise SyntaxException("Відсутній перенос на новий рядок",self.line())
-                return True
-            else:
-                raise SyntaxException("Відсутній перенос на новий рядок",self.line())
-        else:
-            raise SyntaxException("Відсутній перший оператор",self.line())
+            return False
+   
     def type(self):
         if self.lexeme(1) or self.lexeme(2) or self.lexeme(12):
             self.i+=1
             return True
-        else:
-            raise SyntaxException("Невірний тип",self.line())
+        return False
             
     def spZm(self):
         if self.idn():
@@ -83,11 +68,27 @@ class SyntaxAnalyzer:
                 self.i+=1
                 if not self.idn():
                     raise SyntaxException("Відсутній ідентифікатор",self.line())
-            return True
+            if self.lexeme(15):
+                return True
+            raise SyntaxException("Невірний список змінних",self.line())
+        return False
+
+    def spOp(self):#TODO refactor same code
+        if self.op():
+            if self.lexeme(15):
+                self.i+=1
+                while not self.lexeme(14) and self.op():
+                    if self.lexeme(15):
+                        self.i+=1
+                    else:
+                        raise SyntaxException("Відсутній перенос на новий рядок",self.line())
+                if self.lexeme(14):
+                    return True
+                raise SyntaxException("Невірний оператор",self.line())
+            else:
+                raise SyntaxException("Відсутній перенос на новий рядок",self.line())
         else:
-            raise SyntaxException("Відсутній перший ідентифікатор",self.line())
-
-
+            raise SyntaxException("Відсутній перший оператор",self.line())
     def op(self):
         if self.input() or self.output() or self.loop() or self.cond() or self.labelCall():
             return True
@@ -98,7 +99,7 @@ class SyntaxAnalyzer:
             elif self.lexeme(17):
                 self.i+=1
                 if self.expr():
-                    if  self.znakVidn():
+                    if self.znakVidn():
                         if self.expr():
                             if self.lexeme(33):
                                 self.i+=1
@@ -107,19 +108,26 @@ class SyntaxAnalyzer:
                                         self.i+=1
                                         if self.expr():
                                             return True
-
+                                        else:
+                                            raise SyntaxException("Відсутній вираз",self.line())
+                                    else:
+                                        raise SyntaxException("Відсутній оператор :",self.line())
+                                else:
+                                    raise SyntaxException("Відсутній вираз",self.line())
+                            else:
+                                raise SyntaxException("Відсутній оператор ?",self.line())
+                        else:
+                            raise SyntaxException("Відсутній вираз",self.line())
                     if self.lexeme(15):
                         return True
                     else:
-                        print("_+_+_+_+")
+                        raise SyntaxException("Невірне присвоєння",self.line())
                 else:
-                    raise SyntaxException("Невірне присвоєння",self.line())
+                    raise SyntaxException("Відсутній вираз",self.line())
             else:
-                raise SyntaxException("()()()()()",self.line())
-        else:
-            return False
-            raise SyntaxException("Невірний оператор",self.line())
-    
+                raise SyntaxException("Відсутнє присвоєння або оператор :",self.line())
+        return False
+
     def input(self):
         if self.lexeme(7):
             self.i+=1
@@ -130,35 +138,38 @@ class SyntaxAnalyzer:
                         self.i+=1
                         if not self.idn():
                             raise SyntaxException("Відсутній ідентифікатор",self.line())
-                    return True   
+                    if self.lexeme(15):
+                        return True 
+                    raise SyntaxException("Невірний синтаксис оператора вводу. Очікується оператор >> або завершення оператора",self.line())
                 else:
                     raise SyntaxException("Відсутній ідентифікатор",self.line())
             else:
                 raise SyntaxException("Відсутній оператор >>",self.line())
         return False
-        # чи треба else
     def output(self):
         if self.lexeme(8):
             self.i+=1
             if self.lexeme(18):
                 self.i+=1
-                if self.idn():
+                if self.lexeme(101) or self.idn():
+                    if self.lexeme(101):
+                        self.i+=1
                     while self.lexeme(18):
                         self.i+=1
                         if self.lexeme(101):
                             self.i+=1
                         elif self.idn():
                             pass
-                        # elif not self.idn():
                         else:
                             raise SyntaxException("Відсутній ідентифікатор або кфт",self.line())
-                    return True   
+                    if self.lexeme(15):
+                        return True 
+                    raise SyntaxException("Невірний синтаксис оператора виводу. Очікується оператор << або завершення оператора",self.line())
                 else:
-                    raise SyntaxException("Відсутній ідентифікатор",self.line())
+                    raise SyntaxException("Відсутній ідентифікатор або кфт",self.line())
             else:
                 raise SyntaxException("Відсутній оператор <<",self.line())
         return False
-        # чи треба else
     def loop(self):
         if self.lexeme(3):
             self.i+=1
@@ -176,7 +187,24 @@ class SyntaxAnalyzer:
                                             self.i+=1
                                             if self.op():
                                                 return True
-        #
+                                            else:
+                                                raise SyntaxException("Відсутній оператор",self.line())
+                                        else:
+                                            raise SyntaxException("Відсутній оператор do",self.line())
+                                    else:
+                                        raise SyntaxException("Відсутнє відношення",self.line())
+                                else:
+                                    raise SyntaxException("Відсутній оператор while",self.line())
+                            else:
+                                raise SyntaxException("Відсутній вираз",self.line())
+                        else:
+                            raise SyntaxException("Відсутній оператор by",self.line())
+                    else:
+                        raise SyntaxException("Відсутній вираз",self.line())
+                else:
+                    raise SyntaxException("Відсутній оператор =",self.line())
+            else:
+                raise SyntaxException("Відсутній ідентифікатор",self.line())
         return False     
     def cond(self):
         if self.lexeme(6):
@@ -186,6 +214,10 @@ class SyntaxAnalyzer:
                     self.i+=1
                     if self.labelCall():
                         return True
+                    else:
+                        raise SyntaxException("Відсутній оператор goto",self.line())
+                else:
+                    raise SyntaxException("Відсутній оператор then",self.line())
         return False
     def labelCall(self):
         if self.lexeme(11):
@@ -195,13 +227,17 @@ class SyntaxAnalyzer:
                 return True
             else:
                 raise SyntaxException("Відсутня мітка",self.line())                
-        else:
-            return False
+        return False
     def vidn(self):
         if self.expr():
             if self.znakVidn():
                 if self.expr():
                     return True
+                else:
+                    raise SyntaxException("Відсутній вираз",self.line())
+            else:
+                raise SyntaxException("Відсутній знак відношення",self.line())
+        raise SyntaxException("Відсутній вираз",self.line())
     def znakVidn(self):
         if self.lexeme(20) or self.lexeme(21) or  self.lexeme(22) or \
             self.lexeme(23) or self.lexeme(24) or self.lexeme(25):
@@ -209,20 +245,27 @@ class SyntaxAnalyzer:
             return True
         return False
     def expr(self):
-        if self.t():
+        if self.term():
             while self.lexeme(26) or self.lexeme(27):
                 self.i+=1
-                if not self.t():
-                    return False
+                if  self.term():
+                    pass
+                else:
+                    raise SyntaxException("Відсутній term",self.line())
             return True
-    def t(self):
-        if self.f():
+        return False
+    def term(self):
+        if self.factor():
             while self.lexeme(28) or self.lexeme(29):
                 self.i+=1
-                if not self.f():
-                    return False
+                if self.factor():
+                    pass
+                else:
+                    raise SyntaxException("Відсутній factor",self.line())
             return True
-    def f(self):
+        return False
+        
+    def factor(self):
         if self.idn():
             return True
         elif self.lexeme(101):
@@ -234,13 +277,16 @@ class SyntaxAnalyzer:
                 if self.lexeme(31):
                     self.i+=1
                     return True
+                else:
+                    raise SyntaxException("Відсутня закриваюча дужка )",self.line())
+            else:
+                raise SyntaxException("Відсутній вираз",self.line())
         return False 
     def idn(self):
         if self.lexeme(100) or self.lexeme(102):
             self.i+=1
             return True
         return False
-        raise SyntaxException("Невірний ідентифікатор",self.line())
         
 
 
