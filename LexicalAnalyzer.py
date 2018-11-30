@@ -120,8 +120,7 @@ class LexicalAnalyzer:
 
     def constantExists(self,lexeme):
        return lexeme in [constant.name for constant in self.constants]
-    def addConstant(self,constant):
-        constant_type = self.TYPE_FLOAT if ('.' in constant) else self.TYPE_INT
+    def addConstant(self,constant,constant_type):
         self.constants.append(Constant(len(self.constants)+1,constant ,constant_type))
         return self.constants[-1]
     def getConstantByName(self,constant):
@@ -201,12 +200,14 @@ class LexicalAnalyzer:
         self.addLexeme(idn.name,idn_code, str(idn.id))
     def processConstant(self, lexeme):
         lexeme  = lexeme.lstrip('+')
-        if lexeme!='0':
+        constant_type = self.TYPE_FLOAT if ('.' in lexeme) else self.TYPE_INT
+        if constant_type==self.TYPE_FLOAT:
             lexeme= lexeme.rstrip('0')
         if self.constantExists(lexeme):
             con = self.getConstantByName(lexeme)
         else:
-            con = self.addConstant(lexeme)
+            con = self.addConstant(lexeme,constant_type)
+
         self.addLexeme(con.name,self.CON_CODE, str(con.id))        
     def processTerminal(self, lexeme):
         if lexeme =='\n':

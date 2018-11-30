@@ -1,6 +1,6 @@
 int a
 float b,c
-label exit
+label label1,label2
 {
     cout<<35<<-5.1  
     cout<<a
@@ -8,30 +8,11 @@ label exit
     b = 5-16
     c = 5>2? -15.6 : -89
     a = 5*5*9/(8-9)
-    goto exit 
-    exit:
+    goto label1 
+    label1:
+    if a<0 then goto label2
+    cout<<a
+    label2:
+    for a = 1 by 1 while a < 10 do cout<<a
 }
 
-    2 2.2 a =-2.20  -15-a!=b 
-    
-    goto lab}
-    //label: a = 56
-}
-
-'''
-label: int a
-a=20
-cout<<a
-cout<<a+3<<4
-a = (10+5*2)*10+2
-cout<<a
-cout<<1?10:20
-
-//for <ід>=<вираз> by <вираз> while<відношення> do <оператор>
-for a = 1 by 1 while a < 10 do{cout<<3}
-//if <відношення> then goto <мітка>
-if a==10 then goto label
-
-b = 20.5
-cout<<b
-'''

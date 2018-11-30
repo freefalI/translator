@@ -1,6 +1,4 @@
 from LexicalAnalyzer import *
-# from main import tablesToString
-#TODO remove else
 class SyntaxAnalyzer:
     def __init__(self,t_lexemes,t_idns,t_constants):
         self.lexemes = t_lexemes
@@ -8,7 +6,7 @@ class SyntaxAnalyzer:
         self.constants = t_constants
         self.i = 0
     def run(self):
-        print(self.program())
+        return(self.program())
     def lexeme(self,lexeme_code):
         return self.lexemes[self.i].code==lexeme_code
     def line(self):
@@ -73,7 +71,7 @@ class SyntaxAnalyzer:
             raise SyntaxException("Невірний список змінних",self.line())
         return False
 
-    def spOp(self):#TODO refactor same code
+    def spOp(self):
         if self.op():
             if self.lexeme(15):
                 self.i+=1
@@ -177,7 +175,7 @@ class SyntaxAnalyzer:
                 if self.lexeme(17):
                     self.i+=1
                     if self.expr():
-                        if self.lexeme(14):
+                        if self.lexeme(4):
                             self.i+=1
                             if self.expr():
                                 if self.lexeme(9):
@@ -302,4 +300,4 @@ if __name__ == "__main__":
     # print(text)
 
     sAn = SyntaxAnalyzer(*lexer.run())
-    sAn.run()
+    print(sAn.run())
