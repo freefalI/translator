@@ -1,7 +1,6 @@
 int a
 float b,c
-label label1,label2
-{
+label label1,label2{
     cout<<35<<-5.1  
     cout<<a
     a = -15.5
@@ -9,7 +8,7 @@ label label1,label2
     c = 5>2? -15.6 : -89
     a = 5*5*9/(8-9)
     goto label1 
-    label1:
+    label2:
     if a<0 then goto label2
     cout<<a
     label2:
