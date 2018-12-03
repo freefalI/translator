@@ -16,19 +16,38 @@ def tablesToString(t_lexemes,t_idns,t_constants):
         constant_table +=str(constant)+"\n"
     return(lexeme_table,idn_table,constant_table)
 
-def makeTables(t_lexemes,t_idns,t_constants):
-    lexeme_pattern =  "{:^5}|{:^5}|{:<20}|{:<10}|{:^10}|{:^10}|{:^10}|\n"
-    lexeme_table ="---Lexemes\n"+ lexeme_pattern.format("id","line","lexeme","code","idn code","con code","label code")+"═"*77+"\n"
-    for lexeme in t_lexemes:
-        name = lexeme.name if lexeme.name!='\n' else '¶'
-        f1=f2=f3=""
-        if lexeme.code==LexicalAnalyzer.IDN_CODE:
-            f1 = lexeme.fid
-        if lexeme.code==LexicalAnalyzer.CON_CODE:
-            f2 = lexeme.fid
-        if lexeme.code==LexicalAnalyzer.LAB_CODE:
-            f3 = lexeme.fid
-        lexeme_table += lexeme_pattern.format(lexeme.id,lexeme.line,name,lexeme.code,f1,f2,f3)
+def makeTables(t_lexemes,t_idns,t_constants,t_transitions=None):
+    if t_transitions:
+
+        lexeme_pattern =  "{:^5}|{:^5}|{:<20}|{:<10}|{:^10}|{:^10}|{:^10}|{:^10}|{:^20}|\n"
+        lexeme_table ="---Lexemes\n"+ lexeme_pattern.format("id","line","lexeme","code","idn code","con code","label code","state","stack")+"═"*107+"\n"
+        for index,lexeme in enumerate(t_lexemes):
+            name = lexeme.name if lexeme.name!='\n' else '¶'
+            f1=f2=f3=""
+            if lexeme.code==LexicalAnalyzer.IDN_CODE:
+                f1 = lexeme.fid
+            if lexeme.code==LexicalAnalyzer.CON_CODE:
+                f2 = lexeme.fid
+            if lexeme.code==LexicalAnalyzer.LAB_CODE:
+                f3 = lexeme.fid
+            stack = "["+",".join([str(i) for i in t_transitions[index][1]])+"]"
+            
+            lexeme_table += lexeme_pattern.format(lexeme.id,lexeme.line,name,lexeme.code,f1,f2,f3,t_transitions[index][0],stack)
+
+    else:
+        lexeme_pattern =  "{:^5}|{:^5}|{:<20}|{:<10}|{:^10}|{:^10}|{:^10}|\n"
+        lexeme_table ="---Lexemes\n"+ lexeme_pattern.format("id","line","lexeme","code","idn code","con code","label code")+"═"*77+"\n"
+        for lexeme in t_lexemes:
+            name = lexeme.name if lexeme.name!='\n' else '¶'
+            f1=f2=f3=""
+            if lexeme.code==LexicalAnalyzer.IDN_CODE:
+                f1 = lexeme.fid
+            if lexeme.code==LexicalAnalyzer.CON_CODE:
+                f2 = lexeme.fid
+            if lexeme.code==LexicalAnalyzer.LAB_CODE:
+                f3 = lexeme.fid
+            lexeme_table += lexeme_pattern.format(lexeme.id,lexeme.line,name,lexeme.code,f1,f2,f3)
+
 
     idn_pattern = "{:^5}|{:<20}|{:<10}|{:^5}|\n"
     idn_table = "\n---Idns\n" +idn_pattern.format("id","name","type","line")+"═"*44+"\n"
@@ -174,9 +193,16 @@ class Complier:
         try:
             (t_lexemes,t_idns,t_constants) = lexer.run()
             sAn = SyntaxAnalyzer2(t_lexemes,t_idns,t_constants)
-            sAn.run()
+            state_table = sAn.run()
+            
+            if  state_table == True:
+                state_table=None
+                
+
+
+
             # text2="".join(tablesToString(t_lexemes,t_idns,t_constants))
-            text2="".join(makeTables(t_lexemes,t_idns,t_constants))
+            text2="".join(makeTables(t_lexemes,t_idns,t_constants,state_table))
             self.text_area_bottom.insert(1.0,text2)
         except TranslatorException as ex:
             self.text_area_bottom.insert(1.0,ex.__class__.__name__+"\n"+str(ex))
