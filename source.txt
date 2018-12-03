@@ -1,4 +1,4 @@
-int a
+int a cout
 float b,c
 label label1,label2{
     cout<<35<<-5.1  

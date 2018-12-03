@@ -26,7 +26,7 @@ class SyntaxAnalyzer:
                 else:
                     raise SyntaxException("Відсутній список операторів",self.line())
             else:
-                raise SyntaxException("Немає відкриваючої фігурної дужки",+self.line())
+                raise SyntaxException("Немає відкриваючої фігурної дужки",self.line())
     
     def spOg(self):
         if self.og():
@@ -190,7 +190,7 @@ class SyntaxAnalyzer:
                                         else:
                                             raise SyntaxException("Відсутній оператор do",self.line())
                                     else:
-                                        raise SyntaxException("Відсутнє відношення",self.line())
+                                        raise SyntaxException("Відсутній знак відношення",self.line())
                                 else:
                                     raise SyntaxException("Відсутній оператор while",self.line())
                             else:
