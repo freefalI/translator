@@ -3,7 +3,7 @@ from SyntaxAnalyzer import *
 from SyntaxAnalyzer2 import *
 from tkinter import *
 from tkinter.filedialog import askopenfilename,asksaveasfilename
-
+import transition_table
 def tablesToString(t_lexemes,t_idns,t_constants): 
     lexeme_table = "---Lexemes\n"
     for lexeme in t_lexemes:
@@ -192,7 +192,7 @@ class Complier:
         lexer = LexicalAnalyzer(text)
         try:
             (t_lexemes,t_idns,t_constants) = lexer.run()
-            sAn = SyntaxAnalyzer2(t_lexemes,t_idns,t_constants)
+            sAn = SyntaxAnalyzer2(t_lexemes,t_idns,t_constants,transition_table.transition_table)
             state_table = sAn.run()
             
             if  state_table == True:
