@@ -2,7 +2,7 @@ import numpy as np
 np.set_printoptions(threshold=np.inf)
 import grammar
 class RelationTableMaker:
-    def __init__(self,grammar):
+    def __init__(self,grammar): 
         self.grammar = grammar
         self.terminals = []
         self.nonterminals=[]
@@ -12,9 +12,11 @@ class RelationTableMaker:
         self.number_of_nonterminals=None
         self.conflicts=[]
         self.conflicts2={}
+
         self.process()
-    def ruleHasAlternatives(self,array):
-        for i in array:
+    
+    def ruleHasAlternatives(self,rule):
+        for i in rule:
             if isinstance(i,tuple):
                 return True
         return False
@@ -29,11 +31,11 @@ class RelationTableMaker:
 
     def fillTrnsAndNonTrns(self):
         for nonterminal in self.grammar.keys():
-            self.nonterminals.append('<'+nonterminal+'>')
+            self.nonterminals.append(nonterminal)
 
         for nonterminal in self.grammar.keys():
-            if '<'+nonterminal+'>' not in self.nonterminals:
-                self.nonterminals.append('<'+nonterminal+'>')
+            if nonterminal not in self.nonterminals:
+                self.nonterminals.append(nonterminal)
             rule = self.grammar[nonterminal]
             if self.ruleHasAlternatives(rule):
                 for variant in rule:
@@ -66,7 +68,7 @@ class RelationTableMaker:
     def isNonTerminal(self,trn_or_nontrn):
         return not  self.isTerminal(trn_or_nontrn)
     def _first_plus_recursion(self,trn_or_nontrn,array):
-        rule = self.grammar[trn_or_nontrn[1:-1]]
+        rule = self.grammar[trn_or_nontrn]
         if self.ruleHasAlternatives(rule):
             for variant in rule:
                 if  self.isNonTerminal(variant[0]):
@@ -91,7 +93,7 @@ class RelationTableMaker:
         return array
 
     def _last_plus_recursion(self,trn_or_nontrn,array):
-        rule = self.grammar[trn_or_nontrn[1:-1]]
+        rule = self.grammar[trn_or_nontrn]
         if self.ruleHasAlternatives(rule):
             for variant in rule:
                 if  self.isNonTerminal(variant[-1]):
@@ -151,17 +153,20 @@ class RelationTableMaker:
             #3.2            
             if self.isNonTerminal(trn2):     
                 first_plus = self.firstPlus(trn2)
-                for element in first_plus:
-                    j = self.trn_and_nontrn_table[element]
-                    if self.relationMatrix[i][j]==0 or self.relationMatrix[i][j]==3:
-                        self.relationMatrix[i][j] = 3
-                        # print(i,j,element)
-                    else:
-                        self.conflicts.append((i,j,element,trn2,self.relationMatrix[i][j],3,'>'))
-                        if self.conflicts2.get((i,j)):
-                            self.conflicts2[(i,j)].append('>')
+                for a in last_plus:
+                    for b in first_plus:
+                        i = self.trn_and_nontrn_table[a]
+                        j = self.trn_and_nontrn_table[b]
+                        # print(i,j)
+                        if self.relationMatrix[i][j]==0 or self.relationMatrix[i][j]==3:
+                                self.relationMatrix[i][j] = 3
+                                # print(i,j,element)
                         else:
-                            self.conflicts2.update({(i,j):['=','>']})
+                            # self.conflicts.append((i,j,a,b,self.relationMatrix[i][j],3,'>'))
+                            if self.conflicts2.get((i,j)):
+                                self.conflicts2[(i,j)].append('>')
+                            else:
+                                self.conflicts2.update({(i,j):['=','>']})
 
 
     def process(self):#add this code to __init__
